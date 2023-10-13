@@ -1,0 +1,24 @@
+# Stage 1: Build the Node.js client application
+FROM node:16.20-slim as builder
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the rest of the application code to the working directory
+COPY . .
+
+# Install project dependencies
+RUN npm install
+
+# Build the client application
+RUN npm run build
+
+# Stage 2: Serve the client application with Nginx
+FROM nginx:alpine
+
+# Copy the built client files from the builder stage to the Nginx container
+COPY --from=builder /app/build /usr/share/nginx/html
+
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
