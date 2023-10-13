@@ -1,0 +1,20 @@
+# Use the official Node.js 14 image as the base image
+FROM node:16.14-slim
+
+# Set the working directory in the container
+WORKDIR /app
+# Copy the server package.json and package-lock.json
+COPY . .
+
+
+#Delete node_modules
+RUN rm -rf node_modules
+
+# Install server dependencies
+RUN npm install
+
+# Expose the port for the server
+EXPOSE 8888
+
+# Start the server
+CMD ["node", "server.js"]
