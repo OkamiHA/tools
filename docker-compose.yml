@@ -1,0 +1,39 @@
+version: '3'
+services:
+  database:
+    image: mysql
+    container_name: database
+    environment:
+      - MYSQL_DATABASE=database_production
+      #- MYSQL_ALLOW_EMPTY_PASSWORD=true
+#    We cannot set user as 'root' if mysql is below version of 5.x: https://github.com/docker-library/mysql/issues/129
+    #MYSQL_USER: 'root'
+#    MYSQL_PASSWORD: '12345678'
+      - MYSQL_ROOT_PASSWORD=12345678
+    ports:
+      - "8306:3306"
+    volumes:
+      - ./data/conf.d:/etc/mysql/conf.d
+      - ./data/logs:/logs
+      - mysql_data:/var/lib/mysql
+
+  server:
+    container_name: server
+    image: server:latest
+    environment:
+      - NODE_ENV=production
+    ports:
+      - '8888:8888'
+    volumes:
+      - ./config:/app/config
+  client:
+    container_name: client
+    image: client:latest
+    depends_on:
+      - server
+    ports:
+      - "8000:80"
+    environment:
+      - REACT_APP_API_URL=http://server:8888
+volumes:
+  mysql_data:
