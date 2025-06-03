@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  pdf2doc:
+    image: pdf2doc:latest         # Dùng image đã build
+    container_name: pdf2doc-app
+    ports:
+      - "8090:8080"
+    volumes:
+      - ./output:/app/output
+      - ./converted:/app/converted
